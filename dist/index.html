@@ -19,15 +19,51 @@
             <div id="upcoming">Upcoming</div>
           </div>
           <div class="projects">
-            <div class="proj">
-              <div id="name">Test project</div>
-              <button id="delProj">X</button>
+            <div class="proj" data-="0">
+              <div class="name">Test project</div>
+              <button class="delProj">X</button>
             </div>
           </div>
           <button id="addProj">Add Project</button>
         </div>
         <div class="right">
           <div id="nameDisplay">Test project</div>
+          <div class="tasks">
+            <div class="task">
+              <div class="taskL">
+                <button id="check">✓</button>
+                <div id="taskTitle">Go to gym</div>
+              </div>
+              <div class="taskR">
+                <div id="date">23-02-2023</div>
+                <button id="star">★</button>
+                <button id="delTask">X</button>
+              </div>
+            </div>
+          </div>
+          <button id="addTask">Add Task</button>
+          <form id="formTask">
+            <ul>
+              <li>
+                <label for="taskName">Title:</label>
+                <input type="text" id="taskName" name="taskName" />
+              </li>
+              <li>
+                <label for="taskDate">Due date:</label>
+                <input type="date" id="taskDate" name="taskDate" />
+              </li>
+            </ul>
+            <button id="subBtn">Submit</button>
+          </form>
+          <form id="formProject">
+            <ul>
+              <li>
+                <label for="projectName">Name:</label>
+                <input type="text" id="projectName" name="projectName" />
+              </li>
+            </ul>
+            <button id="subBtnProject">Submit</button>
+          </form>
         </div>
       </div>
     </div>

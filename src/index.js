@@ -22,12 +22,11 @@ const base = (() => {
 })();
 
 // Create a single task
-const taskCreate = (title, description, dueDate) => {
+const taskCreate = (title, dueDate) => {
   let priority = 0;
   let checked = 0;
   return {
     title,
-    description,
     dueDate,
     priority,
     checked,
@@ -50,10 +49,13 @@ const taskAdd = (task) => {
   base.currentProject.push(task);
 };
 
-// Create a single project
+// Create and delete a single project
 const projectCreate = () => {
   const newProject = [];
   base.projectList.push(newProject);
+};
+const projectDelete = (index) => {
+  delete base.projectList[index];
 };
 
 // Update today
@@ -113,13 +115,106 @@ const updateAll = () => {
   }
 };
 
+// ------- DOM Manipulation -------//
+const displayController = (() => {
+  // Form toggling
+  // Task
+  const formTask = document.querySelector("#formTask");
+  formTask.style.display = "none";
+  const toggleFormTaskOn = () => {
+    formTask.style.display = "block";
+  };
+  // Project
+  const formProject = document.querySelector("#formProject");
+  formProject.style.display = "none";
+  const toggleFormProjectOn = () => {
+    formProject.style.display = "block";
+  };
+  // Add task
+  const addTaskToDOM = (event) => {
+    const input = document.querySelector("#taskName");
+    const taskDate = document.querySelector("#taskDate");
+    console.log(taskDate.value);
+    console.log(input.value);
+    const newTask = taskCreate(input.value, taskDate.value);
+    taskAdd(newTask);
+    input.value = "";
+    taskDate.value = "";
+    formTask.style.display = "none";
+    console.log(base.currentProject);
+    event.preventDefault();
+  };
+  // Add Project
+  const addProjectToDOM = (event) => {
+    const projectIndex = base.projectList.length - 1;
+    projectCreate();
+    const projects = document.querySelector(".projects");
+    const projectName = document.querySelector("#projectName");
+    const newProj = document.createElement("div");
+    newProj.classList.add("proj");
+    newProj.setAttribute("data-", `${projectIndex}`);
+    projects.appendChild(newProj);
+    const projectNameDiv = document.createElement("div");
+    projectNameDiv.textContent = projectName.value;
+    projectNameDiv.classList.add("name");
+    newProj.appendChild(projectNameDiv);
+    const delProjBtn = document.createElement("button");
+    delProjBtn.textContent = "X";
+    delProjBtn.classList.add("delProj");
+    newProj.appendChild(delProjBtn);
+    projectName.value = "";
+    formProject.style.display = "none";
+    // Set current project listener
+    newProj.addEventListener("click", function () {
+      base.currentProject = base.projectList[projectIndex];
+      console.log(base.currentProject);
+    });
+    // Set delete button listener
+    delProjBtn.addEventListener("click", function () {
+      projectDelete(projectIndex);
+      newProj.remove();
+      console.log(base.currentProject);
+    });
+    event.preventDefault();
+  };
+  // ------- Event Listeners -------//
+  // Add task
+  const addTaskBtn = document.querySelector("#addTask");
+  addTaskBtn.addEventListener("click", toggleFormTaskOn);
+  const subBtn = document.querySelector("#subBtn");
+  subBtn.addEventListener("click", addTaskToDOM);
+  // Add project
+  const addProjectBtn = document.querySelector("#addProj");
+  addProjectBtn.addEventListener("click", toggleFormProjectOn);
+  const subBtnProject = document.querySelector("#subBtnProject");
+  subBtnProject.addEventListener("click", addProjectToDOM);
+  // Set current project for home projects
+  // All
+  const allProj = document.querySelector("#all");
+  allProj.addEventListener("click", function () {
+    updateAll();
+    base.currentProject = base.allProject;
+    console.log(base.currentProject);
+  });
+  // Today
+  const todayProj = document.querySelector("#today");
+  todayProj.addEventListener("click", function () {
+    updateToday();
+    base.currentProject = base.todayProject;
+    console.log(base.currentProject);
+  });
+  // All
+  const upcomingProj = document.querySelector("#upcoming");
+  upcomingProj.addEventListener("click", function () {
+    updateUpcoming();
+    base.currentProject = base.upcomingProject;
+    console.log(base.currentProject);
+  });
+})();
+
 // Testing examples
-const yoyo = taskCreate(
-  "hi",
-  "my name is yoyo",
-  format(new Date(), "yyyy-MM-dd")
-);
-const yoyo2 = taskCreate("bye", "my yoyo 222", "2024-03-10");
+const yoyo = taskCreate("hi", format(new Date(), "yyyy-MM-dd"));
+const yoyo2 = taskCreate("bye", "2024-03-10");
 console.log(yoyo);
 console.log(base.currentDate);
 projectCreate();
