@@ -82,12 +82,6 @@ body {
   gap: 1rem;
   padding: 1rem;
 }
-#check {
-  background-color: #7ff17f;
-}
-#star {
-  background-color: yellow;
-}
 
 button {
   border-radius: 10rem;
@@ -145,4 +139,15 @@ input {
   width: 3rem;
   justify-self: end;
   margin-right: 4px;
+}
+
+button:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 6px 2px white;
+}
+
+.proj:hover,
+.home div:hover {
+  cursor: pointer;
+  border-bottom: 2px inset white;
 }
