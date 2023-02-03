@@ -142,11 +142,12 @@ const displayController = (() => {
     taskDate.value = "";
     formTask.style.display = "none";
     console.log(base.currentProject);
+    displayTasks();
     event.preventDefault();
   };
   // Add Project
   const addProjectToDOM = (event) => {
-    const projectIndex = base.projectList.length - 1;
+    const projectIndex = base.projectList.length;
     projectCreate();
     const projects = document.querySelector(".projects");
     const projectName = document.querySelector("#projectName");
@@ -168,6 +169,9 @@ const displayController = (() => {
     newProj.addEventListener("click", function () {
       base.currentProject = base.projectList[projectIndex];
       console.log(base.currentProject);
+      const nameDisplay = document.querySelector("#nameDisplay");
+      nameDisplay.textContent = projectNameDiv.textContent;
+      displayTasks();
     });
     // Set delete button listener
     delProjBtn.addEventListener("click", function () {
@@ -176,6 +180,84 @@ const displayController = (() => {
       console.log(base.currentProject);
     });
     event.preventDefault();
+  };
+  // Create check button
+  const checkCreate = (divToCheck, indexToCheck) => {
+    const newCheck = document.createElement("button");
+    newCheck.textContent = "✓";
+    newCheck.setAttribute("id", "check");
+    divToCheck.appendChild(newCheck);
+    base.currentProject[indexToCheck].checked === 0
+      ? (newCheck.style.backgroundColor = "#d9d9d9")
+      : (newCheck.style.backgroundColor = "#7ff17f");
+    newCheck.addEventListener("click", function () {
+      checkedChange(indexToCheck);
+      base.currentProject[indexToCheck].checked === 0
+        ? (newCheck.style.backgroundColor = "#d9d9d9")
+        : (newCheck.style.backgroundColor = "#7ff17f");
+    });
+  };
+  // Create star button
+  const starCreate = (divToStar, indexToStar) => {
+    const newStar = document.createElement("button");
+    newStar.textContent = "★";
+    newStar.setAttribute("id", "star");
+    divToStar.appendChild(newStar);
+    base.currentProject[indexToStar].priority === 0
+      ? (newStar.style.backgroundColor = "#d9d9d9")
+      : (newStar.style.backgroundColor = "yellow");
+    newStar.addEventListener("click", function () {
+      priorityChange(indexToStar);
+      base.currentProject[indexToStar].priority === 0
+        ? (newStar.style.backgroundColor = "#d9d9d9")
+        : (newStar.style.backgroundColor = "yellow");
+    });
+  };
+  // Create task delete button
+  const taskDelCreate = (divToDelete, divToAppend, indexToDelete) => {
+    const newTaskDel = document.createElement("button");
+    newTaskDel.textContent = "X";
+    newTaskDel.setAttribute("id", "delTask");
+    divToAppend.appendChild(newTaskDel);
+    newTaskDel.addEventListener("click", function () {
+      taskDelete(indexToDelete);
+      divToDelete.remove();
+    });
+  };
+  // Display tasks
+  const displayTasks = () => {
+    const clearTasks = document.querySelectorAll(".task");
+    clearTasks.forEach((task) => {
+      task.remove();
+    });
+    const taskList = base.currentProject;
+    const allTasksDiv = document.querySelector(".tasks");
+    for (let i = 0; i < taskList.length; i++) {
+      const element = taskList[i];
+      if (element !== undefined) {
+        const taskDiv = document.createElement("div");
+        taskDiv.classList.add("task");
+        taskDiv.setAttribute("data-", `${i}`);
+        allTasksDiv.appendChild(taskDiv);
+        // Left
+        const taskDivLeft = document.createElement("div");
+        taskDivLeft.classList.add("taskL");
+        taskDiv.appendChild(taskDivLeft);
+        checkCreate(taskDivLeft, i);
+        const taskTitle = document.createElement("div");
+        taskTitle.textContent = `${element.title}`;
+        taskDivLeft.appendChild(taskTitle);
+        // Right
+        const taskDivRight = document.createElement("div");
+        taskDivRight.classList.add("taskR");
+        taskDiv.appendChild(taskDivRight);
+        const taskDateDiv = document.createElement("div");
+        taskDateDiv.textContent = `${element.dueDate}`;
+        taskDivRight.appendChild(taskDateDiv);
+        starCreate(taskDivRight, i);
+        taskDelCreate(taskDiv, taskDivRight, i);
+      }
+    }
   };
   // ------- Event Listeners -------//
   // Add task
@@ -195,6 +277,9 @@ const displayController = (() => {
     updateAll();
     base.currentProject = base.allProject;
     console.log(base.currentProject);
+    const nameDisplay = document.querySelector("#nameDisplay");
+    nameDisplay.textContent = "All Tasks";
+    displayTasks();
   });
   // Today
   const todayProj = document.querySelector("#today");
@@ -202,6 +287,9 @@ const displayController = (() => {
     updateToday();
     base.currentProject = base.todayProject;
     console.log(base.currentProject);
+    const nameDisplay = document.querySelector("#nameDisplay");
+    nameDisplay.textContent = "Today";
+    displayTasks();
   });
   // All
   const upcomingProj = document.querySelector("#upcoming");
@@ -209,22 +297,17 @@ const displayController = (() => {
     updateUpcoming();
     base.currentProject = base.upcomingProject;
     console.log(base.currentProject);
+    const nameDisplay = document.querySelector("#nameDisplay");
+    nameDisplay.textContent = "Upcoming";
+    displayTasks();
+  });
+  // Home Project
+  const homeProj = document.querySelector("#homeProject");
+  homeProj.addEventListener("click", function () {
+    base.currentProject = base.homeProject;
+    console.log(base.currentProject);
+    const nameDisplay = document.querySelector("#nameDisplay");
+    nameDisplay.textContent = "Home";
+    displayTasks();
   });
 })();
-
-// Testing examples
-const yoyo = taskCreate("hi", format(new Date(), "yyyy-MM-dd"));
-const yoyo2 = taskCreate("bye", "2024-03-10");
-console.log(yoyo);
-console.log(base.currentDate);
-projectCreate();
-base.currentProject = base.projectList[0];
-taskAdd(yoyo);
-base.currentProject = base.projectList[1];
-taskAdd(yoyo2);
-console.log(base.projectList);
-//taskDelete(0);
-checkedChange(0);
-priorityChange(0);
-updateAll();
-console.log(base.allProject);
